@@ -6,9 +6,6 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-#if UNITY_ADS
-using UnityEngine.Advertisements;
-#endif
 
 namespace TanksMP
 {
@@ -45,7 +42,7 @@ namespace TanksMP
         /// <summary>
         /// The maximum amount of kills to reach before ending the game.
         /// </summary>
-        public int maxScore = 30;
+        public int maxScore = 7;
 
         /// <summary>
         /// The delay in seconds before respawning a player after it got killed.
@@ -62,11 +59,6 @@ namespace TanksMP
         void Awake()
         {
             instance = this;
-
-            //if Unity Ads is enabled, hook up its result callback
-            #if UNITY_ADS
-                UnityAdsManager.adResultEvent += HandleAdResult;
-            #endif
         }
 
 
@@ -145,31 +137,6 @@ namespace TanksMP
             return pos;
         }
 
-
-        //implements what to do when an ad view completes
-        #if UNITY_ADS
-        void HandleAdResult(ShowResult result)
-        {
-            switch (result)
-            {
-                //in case the player successfully watched an ad,
-                //it sends a request for it be respawned
-                case ShowResult.Finished:
-                case ShowResult.Skipped:
-                    localPlayer.CmdRespawn();
-                    break;
-                
-                //in case the ad can't be shown, just handle it
-                //like we wouldn't have tried showing a video ad
-                //with the regular death countdown (force ad skip)
-                case ShowResult.Failed:
-                    DisplayDeath(true);
-                    break;
-            }
-        }
-        #endif
-
-
         /// <summary>
         /// Adds points to the target team depending on matching game mode and score type.
         /// This allows us for granting different amount of points on different score actions.
@@ -244,12 +211,6 @@ namespace TanksMP
                 ui.killCounter[1].GetComponent<Animator>().Play("Animation");
             }
 
-            //calculate if we should show a video ad
-            #if UNITY_ADS
-            if (!skipAd && UnityAdsManager.ShowAd())
-                return;
-            #endif
-
             //when no ad is being shown, set the death text
             //and start waiting for the respawn delay immediately
             ui.SetDeathText(killedByName, teams[other.GetView().GetTeam()]);
@@ -303,15 +264,6 @@ namespace TanksMP
 
             //show game over window (still connected at that point)
             ui.ShowGameOver();
-        }
-
-
-        //clean up callbacks on scene switches
-        void OnDestroy()
-        {
-            #if UNITY_ADS
-                UnityAdsManager.adResultEvent -= HandleAdResult;
-            #endif
         }
     }
 

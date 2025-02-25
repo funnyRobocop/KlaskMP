@@ -204,13 +204,6 @@ namespace TanksMP
             //hide text but enable game over window
             gameOverText.gameObject.SetActive(false);
             gameOverMenu.SetActive(true);
-            
-            //check whether an ad was shown during the game
-            //if no ad was shown during the whole round, we request one here
-            #if UNITY_ADS
-            if(!UnityAdsManager.didShowAd())
-                UnityAdsManager.ShowAd(true);
-            #endif
         }
 
 
