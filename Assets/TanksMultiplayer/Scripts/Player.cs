@@ -91,32 +91,7 @@ namespace TanksMP
                 //DoSome();
             }
         }
-
-
-        //continously check for input on desktop platforms
-        #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
-        void FixedUpdate()
-		{
-            //movement variables
-            Vector2 moveDir;
-
-            //reset moving input when no arrow keys are pressed down
-            if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
-            {
-                moveDir.x = 0;
-                moveDir.y = 0;
-            }
-            else
-            {
-                //read out moving directions and calculate force
-                moveDir.x = Input.GetAxis("Horizontal");
-                moveDir.y = Input.GetAxis("Vertical");
-                Move(moveDir);
-            }
-        }
-        #endif
-            
-      
+        
         /// <summary>
         /// Helper method for getting the current object owner.
         /// </summary>

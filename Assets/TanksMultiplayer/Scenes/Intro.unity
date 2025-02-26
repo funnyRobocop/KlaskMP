@@ -676,8 +676,6 @@ MonoBehaviour:
   loadingWindow: {fileID: 1516152654}
   connectionErrorWindow: {fileID: 1466157128}
   nameField: {fileID: 1388582011}
-  networkDrop: {fileID: 2013689020}
-  serverField: {fileID: 632891843}
   musicToggle: {fileID: 2098734082}
   volumeSlider: {fileID: 1218799830}
 --- !u!4 &96511439
@@ -4527,8 +4525,6 @@ MonoBehaviour:
   m_Options:
     m_Options:
     - m_Text: 'Network: Online'
-      m_Image: {fileID: 0}
-    - m_Text: 'Network: LAN'
       m_Image: {fileID: 0}
     - m_Text: 'Network: Offline'
       m_Image: {fileID: 0}

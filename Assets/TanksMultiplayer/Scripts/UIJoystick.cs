@@ -58,14 +58,6 @@ namespace TanksMP
 		void Start()
 		{
 			thumb = target.GetComponent<RectTransform>();
-
-			//in the editor, disable input received by joystick graphics:
-            //we want them to be visible but not receive or block any input
-			#if UNITY_EDITOR
-				Graphic[] graphics = GetComponentsInChildren<Graphic>();
-				for(int i = 0; i < graphics.Length; i++)
-					graphics[i].raycastTarget = false;
-			#endif
 		}
 
 
