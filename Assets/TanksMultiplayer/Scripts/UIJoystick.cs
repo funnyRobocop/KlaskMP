@@ -117,13 +117,6 @@ namespace TanksMP
         //set joystick thumb position to drag position each frame
         void Update()
         {
-            //in the editor the joystick position does not move, we have to simulate it
-			//mirror player input to joystick position and calculate thumb position from that
-			#if UNITY_EDITOR
-				target.localPosition =  position * radius;
-				target.localPosition = Vector3.ClampMagnitude(target.localPosition, radius);
-			#endif
-
             //check for actual drag state and fire callback. We are doing this in Update(),
             //not OnDrag, because OnDrag is only called when the joystick is moving. But we
             //actually want to keep moving the player even though the jostick is being hold down

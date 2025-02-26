@@ -22,10 +22,6 @@ namespace TanksMP
         //setting custom player properties would apply to all objects)
         [HideInInspector] public string myName;
         [HideInInspector] public int teamIndex;
-        [HideInInspector] public int health;
-        [HideInInspector] public int shield;
-        [HideInInspector] public int ammo;
-        [HideInInspector] public int currentBullet;
 
         /// <summary>
         /// Radius in units for detecting other players.
@@ -41,18 +37,10 @@ namespace TanksMP
         //current destination on the navigation mesh
         private Vector3 targetPoint;
 
-        //timestamp when next shot should happen
-        private float nextShot;
-
-        //toggle for update logic
-        private bool isDead = false;
-        
         
         //called before SyncVar updates
         void Start()
-        {           
-            //get components and set camera target
-            camFollow = Camera.main.GetComponent<FollowTarget>();
+        {
             agent = GetComponent<NavMeshAgent>();
             agent.speed = moveSpeed;
 
@@ -60,23 +48,13 @@ namespace TanksMP
             targetPoint = GameManager.GetInstance().GetSpawnPosition(GetView().GetTeam());
             agent.Warp(targetPoint);
 
-            Team team = GameManager.GetInstance().teams[GetView().GetTeam()];
-            for(int i = 0; i < renderers.Length; i++)
-                renderers[i].material = team.material;
-            
-			//set name in label
-            label.text = myName = "Bot" + System.String.Format("{0:0000}", Random.Range(1, 9999));
-            //call hooks manually to update
-            OnHealthChange(GetView().GetHealth());
-            OnShieldChange(GetView().GetShield());
-
             //start enemy detection routine
-            StartCoroutine(DetectPlayers());
+            StartCoroutine(DetectObjects());
         }
         
         
         //sets inRange list for player detection
-        IEnumerator DetectPlayers()
+        IEnumerator DetectObjects()
         {
             //wait for initialization
             yield return new WaitForEndOfFrame();
@@ -145,13 +123,6 @@ namespace TanksMP
                 enabled = false;
                 return;
             }
-            
-            //don't continue if this bot is marked as dead
-            if(isDead) return;
-
-            //stat visualization does not update automatically
-            OnHealthChange(health);
-            OnShieldChange(shield);
 
             //no enemy players are in range
             if(inRange.Count == 0)
@@ -168,101 +139,12 @@ namespace TanksMP
             else
             {
                 //if we reached the targeted point, calculate a new point around the enemy
-                //this simulates more fluent "dancing" movement to avoid being shot easily
+                //this simulates more fluent "dancing" movement
                 if(Vector3.Distance(transform.position, targetPoint) < agent.stoppingDistance)
                 {
                     RandomPoint(inRange[0].transform.position, range * 2, out targetPoint);
                 }
-                
-                //shooting loop 
-                for(int i = 0; i < inRange.Count; i++)
-                {
-                    RaycastHit hit;
-                    //raycast to detect visible enemies and shoot at their current position
-                    if (Physics.Linecast(transform.position, inRange[i].transform.position, out hit))
-                    {
-                        //get current enemy position and rotate this turret
-                        Vector3 lookPos = inRange[i].transform.position;
-                        turret.LookAt(lookPos);
-                        turret.eulerAngles = new Vector3(0, turret.eulerAngles.y, 0);
-                        turretRotation = (short)turret.eulerAngles.y;
-
-                        //find shot direction and shoot there
-                        Vector3 shotDir = lookPos - transform.position;
-                        Shoot(new Vector2(shotDir.x, shotDir.z));
-                        break;
-                    }
-                }
             }
-        }
-
-        
-        /// <summary>
-        /// Override of the base method to handle bot respawn separately.
-        /// </summary>
-        [PunRPC]
-        protected override void RpcRespawn(short senderId)
-        {
-            StartCoroutine(Respawn(senderId));
-        }
-        
-        
-        //the actual respawn routine
-        IEnumerator Respawn(short senderId)
-        {   
-            //stop AI updates
-            isDead = true;
-            inRange.Clear();
-            agent.isStopped = true;
-            killedBy = null;
-
-            //find original sender game object (killedBy)
-            PhotonView senderView = senderId > 0 ? PhotonView.Find(senderId) : null;
-            if (senderView != null && senderView.gameObject != null) killedBy = senderView.gameObject;
-
-            //detect whether the current user was responsible for the kill
-            //yes, that's my kill: increase local kill counter
-            if (killedBy == GameManager.GetInstance().localPlayer.gameObject)
-            {
-                GameManager.GetInstance().ui.killCounter[0].text = (int.Parse(GameManager.GetInstance().ui.killCounter[0].text) + 1).ToString();
-                GameManager.GetInstance().ui.killCounter[0].GetComponent<Animator>().Play("Animation");
-            }
-
-            if (explosionFX)
-            {
-			     //spawn death particles locally using pooling and colorize them in the player's team color
-                 GameObject particle = PoolManager.Spawn(explosionFX, transform.position, transform.rotation);
-                 ParticleColor pColor = particle.GetComponent<ParticleColor>();
-                 if(pColor) pColor.SetColor(GameManager.GetInstance().teams[GetView().GetTeam()].material.color);
-            }
-				
-			//play sound clip on player death
-            if(explosionClip) AudioManager.Play3D(explosionClip, transform.position);
-
-            //toggle visibility for all rendering parts (off)
-            ToggleComponents(false);
-            //wait global respawn delay until reactivation
-            yield return new WaitForSeconds(GameManager.GetInstance().respawnTime);
-            //toggle visibility again (on)
-            ToggleComponents(true);
-
-            //respawn and continue with pathfinding
-            targetPoint = GameManager.GetInstance().GetSpawnPosition(GetView().GetTeam());
-            transform.position = targetPoint;
-            agent.Warp(targetPoint);
-            agent.isStopped = false;
-            isDead = false;
-        }
-
-
-        //disable rendering or blocking components
-        void ToggleComponents(bool state)
-        {
-            GetComponent<Rigidbody>().isKinematic = state;
-            GetComponent<Collider>().enabled = state;
-
-            for (int i = 0; i < transform.childCount; i++)
-                transform.GetChild(i).gameObject.SetActive(state);
-        }
+        }   
     }
 }

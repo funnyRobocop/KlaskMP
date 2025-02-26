@@ -96,11 +96,6 @@ namespace TanksMP
                     PhotonNetwork.ConnectUsingSettings();
                     break;
 
-                //search for open LAN games on the current network, otherwise open a new one
-                case NetworkMode.LAN:
-                    PhotonNetwork.ConnectToMaster(PlayerPrefs.GetString(PrefsKeys.serverAddress), 5055, PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime);
-                    break;
-
                 //enable Photon offline mode to not send any network messages at all
                 case NetworkMode.Offline:
                     PhotonNetwork.OfflineMode = true;
@@ -197,7 +192,7 @@ namespace TanksMP
             switch(activeGameMode)
             {
                 case GameMode.PVP:
-                    initialArrayLength = 4;
+                    initialArrayLength = 2;
                     break;
                 default:
                     initialArrayLength = 2;
@@ -334,56 +329,12 @@ namespace TanksMP
         {
             //only let the master client handle this connection
             if (!PhotonNetwork.IsMasterClient)
-				return;
-
-            //get player-controlled game object from disconnected player
-            GameObject targetPlayer = GetPlayerGameObject(player);
-
-            //process any collectibles assigned to that player
-            if(targetPlayer != null)
-            {
-                Collectible[] collectibles = targetPlayer.GetComponentsInChildren<Collectible>(true);
-                for (int i = 0; i < collectibles.Length; i++)
-                {
-                    //let the player drop the Collectible
-                    PhotonNetwork.RemoveRPCs(collectibles[i].spawner.photonView);
-                    collectibles[i].spawner.photonView.RPC("Drop", RpcTarget.AllBuffered, targetPlayer.transform.position);
-                }
-            }
+				return;            
 
             //clean up instances after processing leaving player
             PhotonNetwork.DestroyPlayerObjects(player);
             //decrease the team fill for the team of the leaving player and update room properties
             PhotonNetwork.CurrentRoom.AddSize(player.GetTeam(), -1);
-        }
-
-
-        /// <summary>
-        /// Finds the remotely controlled Player game object of a specific player,
-        /// by iterating over all Player components and searching for the matching creator.
-        /// </summary>
-        public GameObject GetPlayerGameObject(Photon.Realtime.Player player)
-        {
-            GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
-            List<Player> playerList = new List<Player>();
-
-            //get all Player components from root objects
-            for (int i = 0; i < rootObjs.Length; i++)
-            {
-                Player p = rootObjs[i].GetComponentInChildren<Player>(true);
-                if (p != null) playerList.Add(p);
-            }
-
-            //find the game object where the creator matches this specific player ID
-            for (int i = 0; i < playerList.Count; i++)
-            {
-                if (playerList[i].photonView.CreatorActorNr == player.ActorNumber)
-                {
-                    return playerList[i].gameObject;
-                }
-            }
-
-            return null;
         }
     }
 
@@ -394,8 +345,7 @@ namespace TanksMP
     public enum NetworkMode
     {
         Online = 0,
-        LAN = 1,
-        Offline = 2
+        Offline = 1
     }
 
 

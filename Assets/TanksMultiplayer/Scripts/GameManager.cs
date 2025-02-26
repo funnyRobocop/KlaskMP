@@ -187,56 +187,6 @@ namespace TanksMP
             //return the result
             return isOver;
         }
-        
-        
-        /// <summary>
-        /// Only for this player: sets the death text stating the killer on death.
-        /// If Unity Ads is enabled, tries to show an ad during the respawn delay.
-        /// By using the 'skipAd' parameter is it possible to force skipping ads.
-        /// </summary>
-        public void DisplayDeath(bool skipAd = false)
-        {
-            //get the player component that killed us
-            Player other = localPlayer;
-            string killedByName = "YOURSELF";
-            if(localPlayer.killedBy != null)
-                other = localPlayer.killedBy.GetComponent<Player>();
-
-            //suicide or regular kill?
-            if (other != localPlayer)
-            {
-                killedByName = other.GetView().GetName();
-                //increase local death counter for this game
-                ui.killCounter[1].text = (int.Parse(ui.killCounter[1].text) + 1).ToString();
-                ui.killCounter[1].GetComponent<Animator>().Play("Animation");
-            }
-
-            //when no ad is being shown, set the death text
-            //and start waiting for the respawn delay immediately
-            ui.SetDeathText(killedByName, teams[other.GetView().GetTeam()]);
-            StartCoroutine(SpawnRoutine());
-        }
-
-
-        //coroutine spawning the player after a respawn delay
-        IEnumerator SpawnRoutine()
-        {
-            //calculate point in time for respawn
-            float targetTime = Time.time + respawnTime;
-
-            //wait for the respawn to be over,
-            //while waiting update the respawn countdown
-            while (targetTime - Time.time > 0)
-            {
-                ui.SetSpawnDelay(targetTime - Time.time);
-                yield return null;
-            }
-
-            //respawn now: send request to the server
-            ui.DisableDeath();
-            localPlayer.CmdRespawn();
-        }
-
 
         /// <summary>
         /// Only for this player: sets game over text stating the winning team.
@@ -246,11 +196,9 @@ namespace TanksMP
         {
             //PhotonNetwork.isMessageQueueRunning = false;
             localPlayer.enabled = false;
-            localPlayer.camFollow.HideMask(true);
             ui.SetGameOverText(teams[teamIndex]);
 
             //starts coroutine for displaying the game over window
-            StopCoroutine(SpawnRoutine());
             StartCoroutine(DisplayGameOver());
         }
 

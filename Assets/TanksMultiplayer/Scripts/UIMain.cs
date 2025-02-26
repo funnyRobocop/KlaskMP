@@ -27,23 +27,7 @@ namespace TanksMP
         /// <summary>
 		/// Settings: input field for the player name.
 		/// </summary>
-		public InputField nameField;
-
-        /// <summary>
-        /// Settings: dropdown selection for network mode.
-        /// </summary>
-        public Dropdown networkDrop;
-
-        /// <summary>
-        /// Dropdown selection for preferred game mode.
-        /// </summary>
-        //public Dropdown gameModeDrop;
-
-        /// <summary>
-		/// Settings: input field for manual server address,
-        /// hosting a server in a private network (Photon only).
-		/// </summary>
-		public InputField serverField;
+		public InputField nameField;       
 
         /// <summary>
         /// Settings: checkbox for playing background music.
@@ -54,12 +38,6 @@ namespace TanksMP
         /// Settings: slider for adjusting game sound volume.
         /// </summary>
         public Slider volumeSlider;
-
-        //how many times the shop has been opened
-        //private int shopOpened = 0;
-
-        //how many times the settings have been opened
-        //private int settingsOpened = 0;
 
 
         //initialize player selection in Settings window
@@ -79,9 +57,6 @@ namespace TanksMP
 
             //read the selections and set them in the corresponding UI elements
             nameField.text = PlayerPrefs.GetString(PrefsKeys.playerName);
-            networkDrop.value = PlayerPrefs.GetInt(PrefsKeys.networkMode);
-            //gameModeDrop.value = PlayerPrefs.GetInt(PrefsKeys.gameMode);
-            serverField.text = PlayerPrefs.GetString(PrefsKeys.serverAddress);
             musicToggle.isOn = bool.Parse(PlayerPrefs.GetString(PrefsKeys.playMusic));
             volumeSlider.value = PlayerPrefs.GetFloat(PrefsKeys.appVolume);
 
@@ -100,9 +75,6 @@ namespace TanksMP
         /// </summary>
         public void Play()
         {
-            //UnityAnalyticsManager.MainSceneClosed(shopOpened, settingsOpened, musicToggle.isOn,
-            //                      Encryptor.Decrypt(PlayerPrefs.GetString(PrefsKeys.activeTank)));
-
             loadingWindow.SetActive(true);
             NetworkManagerCustom.StartMatch((NetworkMode)PlayerPrefs.GetInt(PrefsKeys.networkMode));
             StartCoroutine(HandleTimeout());
@@ -134,36 +106,6 @@ namespace TanksMP
         }
 
         /// <summary>
-        /// Increase counter when opening the shop.
-        /// Used for Unity Analytics purposes.
-        /// </summary>
-        public void OpenShop()
-        {
-            //shopOpened++;
-        }
-
-
-        /// <summary>
-        /// Increase counter when opening settings.
-        /// Used for Unity Analytics purposes.
-        /// </summary>
-        public void OpenSettings()
-        {
-            //settingsOpened++;
-        }
-
-
-        /// <summary>
-        /// Allow additional input of server address only in network mode LAN.
-        /// Otherwise, the input field will be hidden in the settings (Photon only).
-        /// </summary>
-        public void OnNetworkChanged(int value)
-        {
-            serverField.gameObject.SetActive((NetworkMode)value == NetworkMode.LAN ? true : false);
-        }
-
-
-        /// <summary>
         /// Save newly selected GameMode value to PlayerPrefs in order to check it later.
         /// Called by DropDown onValueChanged event.
         /// </summary>
@@ -172,7 +114,6 @@ namespace TanksMP
             PlayerPrefs.SetInt(PrefsKeys.gameMode, value);
             PlayerPrefs.Save();
         }
-
 
         /// <summary>
         /// Modify music AudioSource based on player selection.
@@ -184,7 +125,6 @@ namespace TanksMP
             AudioManager.PlayMusic(0);
         }
 
-
         /// <summary>
         /// Modify global game volume based on player selection.
         /// Called by Slider onValueChanged event.
@@ -195,15 +135,12 @@ namespace TanksMP
             AudioListener.volume = value;
         }
 
-
         /// <summary>
         /// Saves all player selections chosen in the Settings window on the device.
         /// </summary>
         public void CloseSettings()
         {
             PlayerPrefs.SetString(PrefsKeys.playerName, nameField.text);
-            PlayerPrefs.SetInt(PrefsKeys.networkMode, networkDrop.value);
-            PlayerPrefs.SetString(PrefsKeys.serverAddress, serverField.text);
             PlayerPrefs.SetString(PrefsKeys.playMusic, musicToggle.isOn.ToString());
             PlayerPrefs.SetFloat(PrefsKeys.appVolume, volumeSlider.value);
             PlayerPrefs.Save();

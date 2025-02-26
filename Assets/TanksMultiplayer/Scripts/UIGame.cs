@@ -18,33 +18,12 @@ namespace TanksMP
         /// <summary>
         /// Joystick components controlling player movement and actions on mobile devices.
         /// </summary>
-        public UIJoystick[] controls;
-
-        /// <summary>
-        /// UI sliders displaying team fill for each team using absolute values.
-        /// </summary>
-        public Slider[] teamSize;
+        public UIJoystick control;
 
         /// <summary>
         /// UI texts displaying kill scores for each team.
         /// </summary>
         public Text[] teamScore;
-
-        /// <summary>
-        /// UI texts displaying kill scores for this local player.
-        /// [0] = Kill Count, [1] = Death Count
-        /// </summary>
-        public Text[] killCounter;
-
-        /// <summary>
-        /// Mobile crosshair aiming indicator for local player.
-        /// </summary>
-        public GameObject aimIndicator;
-
-        /// <summary>
-        /// UI text for indicating player death and who killed this player.
-        /// </summary>
-        public Text deathText;
 
         /// <summary>
         /// UI text displaying the time in seconds left until player respawn.
@@ -65,21 +44,6 @@ namespace TanksMP
         //initialize variables
         void Start()
         {
-            //on non-mobile devices hide joystick controls, except in editor
-            #if !UNITY_EDITOR && (UNITY_STANDALONE || UNITY_WEBGL)
-                ToggleControls(false);
-            #endif
-            
-            //on mobile devices enable additional aiming indicator
-            #if !UNITY_EDITOR && !UNITY_STANDALONE && !UNITY_WEBGL
-            if (aimIndicator != null)
-            {
-                Transform indicator = Instantiate(aimIndicator).transform;
-                indicator.SetParent(GameManager.GetInstance().localPlayer.shotPos);
-                indicator.localPosition = new Vector3(0f, 0f, 3f);
-            }
-            #endif
-
             //play background music
             AudioManager.PlayMusic(1);
         }
@@ -105,7 +69,7 @@ namespace TanksMP
         {
             //loop over sliders values and assign it
 			for(int i = 0; i < size.Length; i++)
-            	teamSize[i].value = size[i];
+            	Debug.Log("Team " + i + " has " + size[i] + " players");
         }
 
 
@@ -118,78 +82,16 @@ namespace TanksMP
             //loop over texts
 			for(int i = 0; i < score.Length; i++)
             {
-                //detect if the score has been increased, then add fancy animation
-                if(score[i] > int.Parse(teamScore[i].text))
-                    teamScore[i].GetComponent<Animator>().Play("Animation");
-
                 //assign score value to text
                 teamScore[i].text = score[i].ToString();
             }
         }
 
-
-        /// <summary>
-        /// Enables or disables visibility of joystick controls.
-        /// </summary>
-        public void ToggleControls(bool state)
-        {
-            for (int i = 0; i < controls.Length; i++)
-                controls[i].gameObject.SetActive(state);
-        }
-
-
-        /// <summary>
-        /// Sets death text showing who killed the player in its team color.
-        /// Parameters: killer's name, killer's team
-        /// </summary>
-        public void SetDeathText(string playerName, Team team)
-        {
-            //hide joystick controls while displaying death text
-            #if UNITY_EDITOR || (!UNITY_STANDALONE && !UNITY_WEBGL)
-                ToggleControls(false);
-            #endif
-            
-            //show killer name and colorize the name converting its team color to an HTML RGB hex value for UI markup
-            deathText.text = "KILLED BY\n<color=#" + ColorUtility.ToHtmlStringRGB(team.material.color) + ">" + playerName + "</color>";
-        }
-        
-        
-        /// <summary>
-        /// Set respawn delay value displayed to the absolute time value received.
-        /// The remaining time value is calculated in a coroutine by GameManager.
-        /// </summary>
-        public void SetSpawnDelay(float time)
-        {                
-            spawnDelayText.text = Mathf.Ceil(time) + "";
-        }
-        
-        
-        /// <summary>
-        /// Hides any UI components related to player death after respawn.
-        /// </summary>
-        public void DisableDeath()
-        {
-            //show joystick controls after disabling death text
-            #if UNITY_EDITOR || (!UNITY_STANDALONE && !UNITY_WEBGL)
-                ToggleControls(true);
-            #endif
-            
-            //clear text component values
-            deathText.text = string.Empty;
-            spawnDelayText.text = string.Empty;
-        }
-
-
         /// <summary>
         /// Set game end text and display winning team in its team color.
         /// </summary>
         public void SetGameOverText(Team team)
-        {
-            //hide joystick controls while displaying game end text
-            #if UNITY_EDITOR || (!UNITY_STANDALONE && !UNITY_WEBGL)
-                ToggleControls(false);
-            #endif
-            
+        {            
             //show winning team and colorize it by converting the team color to an HTML RGB hex value for UI markup
             gameOverText.text = "TEAM <color=#" + ColorUtility.ToHtmlStringRGB(team.material.color) + ">" + team.name + "</color> WINS!";
         }
