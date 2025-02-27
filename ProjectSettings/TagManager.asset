@@ -2,8 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - PlayerHole
+  - Top
+  - EnemyStriker
+  - Right
+  - Ball
+  - Left
+  - PlayerStriker
+  - Bottom
+  - EnemyHole
+  - FakeMagnet
+  - Magnet
   layers:
   - Default
   - TransparentFX
@@ -15,8 +26,8 @@ TagManager:
   - 
   - Player
   - HUD
-  - Bullet
-  - 
+  - Ball
+  - BotBorder
   - 
   - 
   - 
@@ -41,3 +52,5 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  m_RenderingLayers:
+  - Default

@@ -114,9 +114,12 @@ namespace KlaskMP
         //on movement drag ended
         void MoveEnd()
         {
-            //reset rigidbody physics values
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            if (!rb.isKinematic)
+            {
+                //reset rigidbody physics values
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
         }
 
         /// <summary>
@@ -127,11 +130,14 @@ namespace KlaskMP
         {
             //get team area and reposition it there
             transform.position = GameManager.GetInstance().GetSpawnPosition(GetView().GetTeam());
+            transform.rotation = Quaternion.identity;
 
             //reset forces modified by input
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            transform.rotation = Quaternion.identity;
+            if (!rb.isKinematic)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
             //reset input left over
             GameManager.GetInstance().ui.control.OnEndDrag(null);
             GameManager.GetInstance().ui.control.OnEndDrag(null);
