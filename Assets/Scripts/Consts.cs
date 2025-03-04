@@ -6,10 +6,10 @@ public static class Consts
 {
     public const float FieldWidth = 14f;
     public const float FieldHeight = 18f;
-    public const float StrikerRadius = 0.35f;
-    public const float BallRadius = 0.25f;
+    public const float StrikerRadius = 0.5f;
+    public const float BallRadius = 0.5f;
     public const float MagnetRadius = 0.25f;
-    public const float MaxStrikerSpeed = 33f;
+    public const float MaxStrikerSpeed = 0.3f;
     public const int MaxPoints = 6;
     public const int MaxWins = 2;
     public const float MaxAIStateChangeTime = 3f;

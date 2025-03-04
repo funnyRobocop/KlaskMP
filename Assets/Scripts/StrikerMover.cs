@@ -29,7 +29,7 @@ public class StrikerMover : MonoBehaviour
     {
         transform.rotation = Quaternion.identity;
 
-        var newPos = body.position + speed * Time.fixedDeltaTime * direction;
+        var newPos = body.position + speed * Time.deltaTime * direction;
 
         if (newPos.x < -Consts.FieldWidth / 2f + Consts.StrikerRadius)
             newPos = new Vector3(-Consts.FieldWidth / 2f + Consts.StrikerRadius, newPos.y, newPos.z);

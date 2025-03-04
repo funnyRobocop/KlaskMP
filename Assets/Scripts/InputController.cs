@@ -35,8 +35,9 @@ public class InputController : MonoBehaviour
             return;
         }
         
-        var movement = Vector3.ClampMagnitude(new Vector3(Input.mousePosition.x - lastMousePos.x, 0f, Input.mousePosition.y - lastMousePos.y), Consts.MaxStrikerSpeed);
-            lastMousePos = Input.mousePosition;
+        var movement = Vector3.ClampMagnitude(new Vector3(Input.mousePosition.x - lastMousePos.x, 0f, 
+            Input.mousePosition.y - lastMousePos.y), Consts.MaxStrikerSpeed);
+        lastMousePos = Input.mousePosition;
 
         mover.Move(movement);
     }

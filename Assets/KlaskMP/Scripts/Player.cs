@@ -14,7 +14,8 @@ namespace KlaskMP
         /// <summary>
         /// Movement speed in all directions.
         /// </summary>
-        public float moveSpeed = 8f;
+        public float moveSpeed;
+        public float maxMoveSpeed;
         
         //reference to this rigidbody
         #pragma warning disable 0649
@@ -96,18 +97,17 @@ namespace KlaskMP
         }
 
 
-        //moves rigidbody in the direction passed in
-        void Move(Vector2 direction = default(Vector2))
+        //moves rigidbody
+        void Move(Vector2 delta)
         {
-            //if direction is not zero, rotate player in the moving direction relative to camera
-            if (direction != Vector2.zero)
-                transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y))
-                                     * Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.identity;
 
-            //create movement vector based on current rotation and speed
-            Vector3 movementDir = transform.forward * moveSpeed * Time.deltaTime;
-            //apply vector to rigidbody position
-            rb.MovePosition(rb.position + movementDir);
+            var clampDelta = Vector3.ClampMagnitude(delta, maxMoveSpeed) * Time.deltaTime * moveSpeed;
+
+            var newPos = new Vector3(Mathf.Clamp(rb.position.x + clampDelta.x, -Consts.FieldWidth / 2f + Consts.StrikerRadius, Consts.FieldWidth / 2f - Consts.StrikerRadius), 
+                    0f, Mathf.Clamp(rb.position.z + clampDelta.y, -Consts.FieldHeight / 2f + Consts.StrikerRadius, Consts.FieldHeight / 2f - Consts.StrikerRadius));
+            
+            rb.MovePosition(newPos);
         }
 
 
@@ -138,9 +138,8 @@ namespace KlaskMP
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
-            //reset input left over
-            GameManager.GetInstance().ui.control.OnEndDrag(null);
-            GameManager.GetInstance().ui.control.OnEndDrag(null);
+            //reset input 
+            GameManager.GetInstance().ui.control.OnPointerUp(null);
         }
 
 
@@ -150,6 +149,12 @@ namespace KlaskMP
         {
             //display game over window
             GameManager.GetInstance().DisplayGameOver(teamIndex);
+        }
+
+        void OnDestroy()
+        {
+            GameManager.GetInstance().ui.control.onDrag -= Move;
+            GameManager.GetInstance().ui.control.onDragEnd -= MoveEnd;
         }
     }
 }
