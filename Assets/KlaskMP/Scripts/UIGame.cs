@@ -80,13 +80,14 @@ namespace KlaskMP
             }
         }
 
+
         /// <summary>
         /// Set game end text and display winning team in its team color.
         /// </summary>
         public void SetGameOverText(Team team)
-        {            
+        {
             //show winning team and colorize it by converting the team color to an HTML RGB hex value for UI markup
-            gameOverText.text = "TEAM <color=#" + ColorUtility.ToHtmlStringRGB(team.material.color) + ">" + team.name + "</color> WINS!";
+            gameOverText.text = "TEAM " + team.name + " WINS!";
         }
 
 

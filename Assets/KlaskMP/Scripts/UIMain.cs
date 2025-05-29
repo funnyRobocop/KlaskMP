@@ -46,7 +46,6 @@ namespace KlaskMP
             if (!PlayerPrefs.HasKey(PrefsKeys.serverAddress)) PlayerPrefs.SetString(PrefsKeys.serverAddress, "127.0.0.1");
             if (!PlayerPrefs.HasKey(PrefsKeys.playMusic)) PlayerPrefs.SetString(PrefsKeys.playMusic, "true");
             if (!PlayerPrefs.HasKey(PrefsKeys.appVolume)) PlayerPrefs.SetFloat(PrefsKeys.appVolume, 1f);
-            if (!PlayerPrefs.HasKey(PrefsKeys.activeSkin)) PlayerPrefs.SetInt(PrefsKeys.activeSkin, 0);
 
             PlayerPrefs.Save();
 
@@ -55,10 +54,32 @@ namespace KlaskMP
             musicToggle.isOn = bool.Parse(PlayerPrefs.GetString(PrefsKeys.playMusic));
             volumeSlider.value = PlayerPrefs.GetFloat(PrefsKeys.appVolume);
 
+                        //call the onValueChanged callbacks once with their saved values
+            OnMusicChanged(musicToggle.isOn);
+            OnVolumeChanged(volumeSlider.value);
             //listen to network connection and IAP billing errors
             NetworkManagerCustom.connectionFailedEvent += OnConnectionError;
         }
 
+        /// <summary>
+        /// Modify music AudioSource based on player selection.
+        /// Called by Toggle onValueChanged event.
+        /// </summary>
+        public void OnMusicChanged(bool value)
+        {
+            /*AudioManager.GetInstance().musicSource.enabled = musicToggle.isOn;
+            AudioManager.PlayMusic(0);*/
+        }
+
+        /// <summary>
+        /// Modify global game volume based on player selection.
+        /// Called by Slider onValueChanged event.
+        /// </summary>
+        public void OnVolumeChanged(float value)
+        {
+            /*volumeSlider.value = value;
+            AudioListener.volume = value;*/
+        }
 
         /// <summary>
         /// Tries to enter the game scene. Sets the loading screen active while connecting to the
@@ -105,7 +126,7 @@ namespace KlaskMP
             PlayerPrefs.SetInt(PrefsKeys.gameMode, value);
             PlayerPrefs.Save();
         }
-
+        
         /// <summary>
         /// Saves all player selections chosen in the Settings window on the device.
         /// </summary>
@@ -115,33 +136,6 @@ namespace KlaskMP
             PlayerPrefs.SetString(PrefsKeys.playMusic, musicToggle.isOn.ToString());
             PlayerPrefs.SetFloat(PrefsKeys.appVolume, volumeSlider.value);
             PlayerPrefs.Save();
-        }
-
-		
-        /// <summary>
-        /// Opens a browser window to the App Store entry for this app.
-        /// </summary>
-        public void RateApp()
-        {
-            //UnityAnalyticsManager.RateStart();
-            
-            //default app url on non-mobile platforms
-            //replace with your website, for example
-			string url = "";
-			
-			#if UNITY_ANDROID
-				url = "http://play.google.com/store/apps/details?id=" + Application.identifier;
-			#elif UNITY_IPHONE
-				url = "https://itunes.apple.com/app/idXXXXXXXXX";
-			#endif
-			
-			if(string.IsNullOrEmpty(url) || url.EndsWith("XXXXXX"))
-            {
-                Debug.LogWarning("UIMain: You didn't replace your app links!");
-                return;
-            }
-			
-			Application.OpenURL(url);
         }
     }
 }

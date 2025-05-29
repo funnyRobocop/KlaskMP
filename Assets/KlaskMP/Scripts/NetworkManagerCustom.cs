@@ -304,15 +304,12 @@ namespace KlaskMP
         //received from the master client, for this player, after successfully joining a game
 		[PunRPC]
 		void AddPlayer()
-		{
-            //get our selected player prefab index
-			int prefabId = PlayerPrefs.GetInt(PrefsKeys.activeSkin);
-            
+		{            
             //get the spawn position where our player prefab should be instantiated at, depending on the team assigned
             //if we cannot get a position, spawn it in the center of that team area - otherwise use the calculated position
 			Transform startPos = GameManager.GetInstance().teams[PhotonNetwork.LocalPlayer.GetTeam()].spawn;
-			if (startPos != null) PhotonNetwork.Instantiate(playerPrefabs[prefabId].name, startPos.position, startPos.rotation, 0);
-			else PhotonNetwork.Instantiate(playerPrefabs[prefabId].name, Vector3.zero, Quaternion.identity, 0);
+			if (startPos != null) PhotonNetwork.Instantiate(playerPrefabs[0].name, startPos.position, startPos.rotation, 0);
+			else PhotonNetwork.Instantiate(playerPrefabs[0].name, Vector3.zero, Quaternion.identity, 0);
 		}
 
 

@@ -19,15 +19,6 @@ namespace KlaskMP
         /// </summary>
         public static string GetName(this PhotonView player)
         {
-            if (PhotonNetwork.OfflineMode == true)
-            {
-                PlayerBot bot = player.GetComponent<PlayerBot>();
-                if (bot != null)
-                {
-                    return bot.myName;
-                }
-            }
-
             return player.Owner.NickName;
         }
 
@@ -37,15 +28,6 @@ namespace KlaskMP
         /// </summary>
         public static int GetTeam(this PhotonView player)
         {
-            if (PhotonNetwork.OfflineMode == true)
-            {
-                PlayerBot bot = player.GetComponent<PlayerBot>();
-                if (bot != null)
-                {
-                    return bot.teamIndex;
-                }
-            }
-
             return player.Owner.GetTeam();
         }
 
@@ -63,16 +45,6 @@ namespace KlaskMP
         /// </summary>
         public static void SetTeam(this PhotonView player, int teamIndex)
         {
-            if (PhotonNetwork.OfflineMode == true)
-            {
-                PlayerBot bot = player.GetComponent<PlayerBot>();
-                if (bot != null)
-                {
-                    bot.teamIndex = teamIndex;
-                    return;
-                }
-            }
-
             player.Owner.SetTeam(teamIndex);
         }
 
@@ -90,16 +62,6 @@ namespace KlaskMP
         /// </summary>
         public static void Clear(this PhotonView player)
         {
-            if (PhotonNetwork.OfflineMode == true)
-            {
-                PlayerBot bot = player.GetComponent<PlayerBot>();
-                if (bot != null)
-                {
-                    //DoClear();
-                    return;
-                }
-            }
-
             player.Owner.Clear();
         }
 

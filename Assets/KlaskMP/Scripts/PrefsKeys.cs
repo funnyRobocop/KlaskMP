@@ -8,38 +8,33 @@ namespace KlaskMP
         /// <summary>
 		/// PlayerPrefs key for player name: UserXXXX
 		/// </summary>
-        public const string playerName = "TM_playerName";
+        public const string playerName = "playerName";
 
         /// <summary>
         /// PlayerPrefs key for selected network mode: 0, 1 or 2
         /// </summary>
-        public const string networkMode = "TM_networkMode";
+        public const string networkMode = "networkMode";
 
         /// <summary>
         /// PlayerPrefs key for selected game mode.
         /// </summary>
-        public const string gameMode = "TM_gameMode";
+        public const string gameMode = "gameMode";
 
         /// <summary>
         /// Server address for manual connection, e.g. in LAN games.
         /// This is only used when using Photon Networking, as UNET
         /// does support broadcast and automatic server discovery.
         /// </summary>
-        public const string serverAddress = "TM_serverAddress";
+        public const string serverAddress = "serverAddress";
 
         /// <summary>
         /// PlayerPrefs key for background music state: true/false
         /// </summary>
-        public const string playMusic = "TM_playMusic";
+        public const string playMusic = "playMusic";
 
         /// <summary>
         /// PlayerPrefs key for global audio volume: 0-1 range
         /// </summary>
-        public const string appVolume = "TM_appVolume";
-      
-        /// <summary>
-        /// PlayerPrefs key for selected player model: 0/1/2 etc.
-        /// </summary>
-        public const string activeSkin = "TM_activeSkin";
+        public const string appVolume = "appVolume";
     }
 }

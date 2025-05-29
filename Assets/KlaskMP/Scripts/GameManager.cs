@@ -44,11 +44,6 @@ namespace KlaskMP
         /// </summary>
         public int respawnTime = 5;
 
-        /// <summary>
-        /// Enable or disable friendly fire. This is verified in the Bullet script on collision.
-        /// </summary>
-        public bool friendlyFire = false;
-
 
         //initialize variables
         void Awake()
@@ -199,11 +194,6 @@ namespace KlaskMP
         /// The name of the team shown on game over.
         /// </summary>
         public string name;
-
-        /// <summary>
-        /// The color of a team for UI and player prefabs.
-        /// </summary>   
-        public Material material;
 
         /// <summary>
         /// The spawn point of a team in the scene. In case it has a BoxCollider
