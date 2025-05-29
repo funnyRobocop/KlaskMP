@@ -36,6 +36,11 @@ MonoBehaviour:
   RpcList:
   - AddPlayer
   - RpcGameOver
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Fire
+  - RespawnSpaceship
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

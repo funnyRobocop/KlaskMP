@@ -21,7 +21,7 @@ namespace KlaskMP
         /// <summary>
         /// Scene index that gets loaded when disconnecting from a game.
         /// </summary>
-        public int offlineSceneIndex = 0;
+        public int offlineSceneIndex = 2;
 
         /// <summary>
         /// Scene index that gets loaded after a connection has been established.
@@ -180,19 +180,8 @@ namespace KlaskMP
             //the initial team size of the game for the server creating a new room.
             //unfortunately this cannot be set via the GameManager because it does not exist at that point
             short initialArrayLength;
-            //get the selected game mode out of PlayerPrefs
-            GameMode activeGameMode = ((GameMode)PlayerPrefs.GetInt(PrefsKeys.gameMode));
 
-            //set the initial room array size initialization based on game mode
-            switch(activeGameMode)
-            {
-                case GameMode.PVP:
-                    initialArrayLength = 2;
-                    break;
-                default:
-                    initialArrayLength = 2;
-                    break;
-            }
+            initialArrayLength = 2;
 
             //we created a room so we have to set the initial room properties for this room,
             //such as populating the team fill and score arrays
@@ -200,28 +189,7 @@ namespace KlaskMP
             roomProps.Add(RoomExtensions.size, new int[initialArrayLength]);
             roomProps.Add(RoomExtensions.score, new int[initialArrayLength]);
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProps);
-
-            //load the online scene randomly out of all available scenes for the selected game mode
-            //we are checking for a naming convention here, if a scene starts with the game mode abbreviation
-            List<int> matchingScenes = new List<int>();
-            for(int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-            {
-                string[] scenePath = SceneUtility.GetScenePathByBuildIndex(i).Split('/');
-                if (scenePath[scenePath.Length - 1].StartsWith(activeGameMode.ToString()))
-                {
-                    matchingScenes.Add(i);
-                }
-            }
 			
-			//check that your scene begins with the game mode abbreviation
-			if(matchingScenes.Count == 0)
-            {
-                Debug.LogWarning("No Scene for selected Game Mode found in Build Settings!");
-                return;
-            }
-
-            //get random scene out of available scenes and assign it as the online scene
-            onlineSceneIndex = matchingScenes[UnityEngine.Random.Range(0, matchingScenes.Count)];
             //then load it
             PhotonNetwork.LoadLevel(onlineSceneIndex);
         }

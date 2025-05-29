@@ -6,10 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/KlaskMP/Scenes/Intro.unity
+    path: Assets/Scenes/Intro.unity
     guid: c5020d3d185efba4e960e467c526c1ac
   - enabled: 1
-    path: Assets/KlaskMP/Scenes/PVP_Game.unity
+    path: Assets/Scenes/Online.unity
     guid: 273714fb618588347ae082faa671da5d
+  - enabled: 1
+    path: Assets/Scenes/Offline.unity
+    guid: 0643f13831bd732428749ead2825b502
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
