@@ -39,8 +39,6 @@ namespace KlaskMP
         //initialize variables
         void Start()
         {
-            //play background music
-            AudioManager.PlayMusic(1);
         }
 
 

@@ -55,10 +55,6 @@ namespace KlaskMP
             musicToggle.isOn = bool.Parse(PlayerPrefs.GetString(PrefsKeys.playMusic));
             volumeSlider.value = PlayerPrefs.GetFloat(PrefsKeys.appVolume);
 
-            //call the onValueChanged callbacks once with their saved values
-            OnMusicChanged(musicToggle.isOn);
-            OnVolumeChanged(volumeSlider.value);
-
             //listen to network connection and IAP billing errors
             NetworkManagerCustom.connectionFailedEvent += OnConnectionError;
         }
@@ -108,26 +104,6 @@ namespace KlaskMP
         {
             PlayerPrefs.SetInt(PrefsKeys.gameMode, value);
             PlayerPrefs.Save();
-        }
-
-        /// <summary>
-        /// Modify music AudioSource based on player selection.
-        /// Called by Toggle onValueChanged event.
-        /// </summary>
-        public void OnMusicChanged(bool value)
-        {
-            AudioManager.GetInstance().musicSource.enabled = musicToggle.isOn;
-            AudioManager.PlayMusic(0);
-        }
-
-        /// <summary>
-        /// Modify global game volume based on player selection.
-        /// Called by Slider onValueChanged event.
-        /// </summary>
-        public void OnVolumeChanged(float value)
-        {
-            volumeSlider.value = value;
-            AudioListener.volume = value;
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7934437355000050724}
   - component: {fileID: 7146330963142778688}
   m_Layer: 8
-  m_Name: TankFree
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a5fa8dc87825e4f87e00cac1db08b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
+  moveSpeed: 10
   maxMoveSpeed: 100
 --- !u!114 &114000013996810128
 MonoBehaviour:
